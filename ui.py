@@ -160,7 +160,7 @@ class E5CC_UI:
             if m == "AT":
                 self.simulator.at_mode = "AT-2"
                 self.simulator.at_active = True
-            elif m == "P": self.simulator.p += 1.0
+            elif m == "P": self.simulator.p = round(self.simulator.p + 0.1, 1)
             elif m == "I": self.simulator.i += 10
             elif m == "D": self.simulator.d += 5
         elif self.level == "Initial":
@@ -173,7 +173,7 @@ class E5CC_UI:
             if m == "AT":
                 self.simulator.at_mode = "OFF"
                 self.simulator.at_active = False
-            elif m == "P": self.simulator.p = max(0.1, self.simulator.p - 1.0)
+            elif m == "P": self.simulator.p = round(max(0.1, self.simulator.p - 0.1), 1)
             elif m == "I": self.simulator.i = max(0, self.simulator.i - 10)
             elif m == "D": self.simulator.d = max(0, self.simulator.d - 5)
         elif self.level == "Initial":
