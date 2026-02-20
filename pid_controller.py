@@ -79,7 +79,7 @@ class AutoTuner:
         self.peak_values = []
         self.going_up = True
         self.has_crossed = False
-        self.hysteresis = 0.2 # Small hysteresis for stability
+        self.hysteresis = 0.1 # Reduced for higher precision
 
     def update(self, pv, current_sv):
         self.target_sv = current_sv
@@ -114,21 +114,21 @@ class AutoTuner:
                 # Tu: Average time between bottom points
                 tu = (self.peak_times[-1] - self.peak_times[-2]) / (len(self.peak_times) - 1)
                 
-                # a: Average amplitude
-                # We calculate average peak from SV
+                # a: Average amplitude (Peak - SV)
                 avg_peak = sum(self.peak_values) / len(self.peak_values)
                 a = abs(avg_peak - self.target_sv)
                 
-                if a < 0.1: a = 0.1 # Safety
+                if a < 0.02: a = 0.02 # Safety floor for ultra-stable systems
                 
-                # Ku = (4 * 1.0) / (pi * a)
+                # Ku = (4 * D) / (pi * a) -> Fundamental gain
                 import math
                 ku = 4.0 / (math.pi * a)
                 
-                # Ziegler-Nichols (PID)
-                kp = 0.6 * ku
-                # Scaling for Omron (PB = 100/Kp)
-                p = 100.0 / (kp * 1.5) # Tuning factor for the oven
+                # Ziegler-Nichols conversion to Omron parameters
+                # Kp = 0.6 * Ku
+                # Omron P (Banda Proporcional) = 100 / Kp
+                # We add a damping multiplier (2.0) to make it more industrial/slow
+                p = (100.0 / (0.6 * ku)) * 2.0 
                 i = 0.5 * tu
                 d = 0.12 * tu
                 
