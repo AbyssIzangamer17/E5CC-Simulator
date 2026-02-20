@@ -1,13 +1,13 @@
 import time
 
 class ThermalProcess:
-    def __init__(self, initial_temp=25.0, ambient_temp=25.0, gain=0.8, tau=150.0, lag=3.0):
+    def __init__(self, initial_temp=25.0, ambient_temp=25.0, gain=0.4, tau=150.0, lag=4.0):
         self.true_temperature = initial_temp
         self.displayed_temperature = initial_temp
         self.ambient_temp = ambient_temp
-        self.k = gain  # Efficiency (Lowered for stability)
-        self.tau = tau  # Thermal mass (Increased for stability)
-        self.lag_tau = lag # Sensor lag
+        self.k = gain  # Lowered gain to reduce "pulse" impact
+        self.tau = tau  # Thermal mass
+        self.lag_tau = lag # Increased sensor lag
         self.last_time = time.time()
 
     def update(self, power, disturbance=0.0):
